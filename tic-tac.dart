@@ -111,3 +111,100 @@ class Player {
     return position;
   }
 }
+
+
+
+
+
+/// Main game class to manage tic-tac-toe gameplay
+class TicTacGame {
+  // Players initialization
+  Player player1 = Player("player1", 0, "O");
+  Player player2 = Player("player2", 0, "X");
+  String? userInput;
+  
+  // Game state
+  List<int> gameBoard = List<int>.filled(9, 0);  // Game board (0 = empty, 1 = player1, -1 = player2)
+  List<int> result = List<int>.filled(8, 0);     // Tracking win conditions
+  int moveCount = 0;                            // Number of moves played
+
+  /// Start a new two-player game
+  void startNewGame() {
+    // Reset game state
+    gameBoard = List<int>.filled(9, 0);
+    result = List<int>.filled(8, 0);
+    moveCount = 0;
+    
+    print("Starting a new Game !\n");
+    
+    // Player symbol selection
+    while (!selectPlayerSymbols()) {
+      print("Please make sure to enter valid option!!\n");
+    }
+    print("Player1 Selection is: ${player1.choice}, Player2 Selection is: ${player2.choice}");
+    
+    // Main game loop
+    while (!checkGameEnd()) {
+      // Player 1 turn
+      while (!validatePlayerMove(player1.getMove())) {
+        print("Please try again and follow instruction!\n");
+      }
+      gameBoard[player1.position - 1] = PlayerMove.player1.value;
+      moveCount++;
+      printGameBoard();
+      updateResultList(player1.position, PlayerMove.player1);
+      
+      if (checkGameEnd()) {
+        break;
+      }
+
+      // Player 2 turn
+      while (!validatePlayerMove(player2.getMove())) {
+        print("Please try again and follow instruction!\n");
+      }
+      gameBoard[player2.position - 1] = PlayerMove.player2.value;
+      printGameBoard();
+      updateResultList(player2.position, PlayerMove.player2);
+      moveCount++;
+    }
+    
+    showScore();
+  }
+
+  /// Handle player symbol selection (X or O)
+  bool selectPlayerSymbols() {
+    print("Please select Player1 choice (O, X): \n");
+    userInput = stdin.readLineSync();
+    
+    if (userInput != null) {
+      if (userInput?.compareTo("X") == 0) {
+        player1.choice = userInput;
+        player2.choice = "O";
+        return true; 
+      } else if (userInput?.compareTo("O") == 0) {
+        player1.choice = userInput;
+        player2.choice = "X";
+        return true; 
+      } else {
+        print("Please select a valid option either O or X:\n");
+      }
+    }
+    return false;
+  }
+
+  /// Validate if player move is valid
+  bool validatePlayerMove(int position) {
+    // Check if position is within valid range
+    if (position < 1 || position > 9) {
+      print("Make sure to select position between 1-9!!!\n");
+      return false;
+    }
+    
+    // Check if position is already taken
+    if (gameBoard[position - 1] != 0) {
+      print("This position is already selected!!!\n");
+      return false;
+    }
+    
+    return true;
+  }
