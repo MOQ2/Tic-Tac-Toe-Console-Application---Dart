@@ -365,3 +365,26 @@ class TicTacGame {
     showScore();
   }
 }
+
+
+
+
+/// Robot player that makes random moves
+class RobotPlayer extends Player {
+  String? name;
+  String? choice;
+  int winingsCount = 0;
+  int position = -1;
+  
+  // Robot player constructor
+  RobotPlayer([this.name = "robot", this.winingsCount = 0, this.choice = 'X']);
+  
+  @override
+  int getMove() {
+    // Generate random position between 1-9
+    Random random = Random();
+    position = random.nextInt(9) + 1;
+    print("Robot selects position: $position");
+    return position;
+  }
+}
