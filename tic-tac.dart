@@ -289,3 +289,79 @@ class TicTacGame {
       result[6] += player.value;
     }
   }
+
+
+
+  /// Display the current score
+  void showScore() {
+    print('\n' + '=' * 30);
+    print('         🎯 Score Board         ');
+    print('=' * 30);
+    print('🧑 Player 1: ${player1.winingsCount}');
+    print('🧑 Player 2: ${player2.winingsCount}');
+    print('=' * 30 + '\n');
+  }
+
+  /// Reset the game board and scores
+  void resetGame() {
+    gameBoard = List<int>.filled(9, 0);
+    result = List<int>.filled(8, 0);
+    moveCount = 0;
+    player1.position = -1;
+    player2.position = -1;
+    resetScore();
+    print("Game has been reset!\n");
+  }
+
+  /// Reset only the scores
+  void resetScore() {
+    player1.winingsCount = 0;
+    player2.winingsCount = 0;
+  }
+
+  /// Start a game against a robot player
+  void startGameWithRobot() {
+    // Reset game state
+    gameBoard = List<int>.filled(9, 0);
+    result = List<int>.filled(8, 0);
+    moveCount = 0;
+    player1.position = -1;
+    player2.position = -1;
+    
+    print("Starting a new Game with Robot!\n");
+    
+    // Player symbol selection
+    while (!selectPlayerSymbols()) {
+      print("Please make sure to enter valid option!!\n");
+    }
+    print("Player1 Selection is: ${player1.choice}, Player2 Selection is: ${player2.choice}");
+    
+    // Main game loop against robot
+    while (!checkGameEnd()) {
+      // Human player turn
+      while (!validatePlayerMove(player1.getMove())) {
+        print("Please try again and follow instruction!\n");
+      }
+      gameBoard[player1.position - 1] = PlayerMove.player1.value;
+      moveCount++;
+      printGameBoard();
+      updateResultList(player1.position, PlayerMove.player1);
+      
+      if (checkGameEnd()) {
+        break;
+      }
+
+      // Robot player turn
+      RobotPlayer robot = RobotPlayer();
+      while (!validatePlayerMove(robot.getMove())) {
+        // Robot will try different positions until finding a valid one
+      }
+      gameBoard[robot.position - 1] = PlayerMove.player2.value;
+      printGameBoard();
+      updateResultList(robot.position, PlayerMove.player2);
+      moveCount++;
+    }
+    
+    showScore();
+  }
+}
