@@ -208,3 +208,84 @@ class TicTacGame {
     
     return true;
   }
+
+  
+  /// Check if there is a win or draw
+  bool checkGameEnd() { 
+    // Check all possible win conditions
+    for (int i in result) {
+      if (i == 3) {
+        player1.winingsCount++;
+        print("Congratulations Player 1 Won!!! \n\n");
+        return true;
+      } else if (i == -3) {
+        player2.winingsCount++;
+        print("Congratulations Player 2 Won!!! \n\n");
+        return true;
+      }
+    }
+    
+    // Check for draw (all positions filled)
+    if (moveCount == 9) {
+      print("Game End with a draw!!!");
+      return true;
+    }
+    
+    return false;
+  }
+
+  /// Display the current game board
+  void printGameBoard() {
+    print('''
+ ${getSymbol(gameBoard[0])} | ${getSymbol(gameBoard[1])} | ${getSymbol(gameBoard[2])}
+---+---+---
+ ${getSymbol(gameBoard[3])} | ${getSymbol(gameBoard[4])} | ${getSymbol(gameBoard[5])}
+---+---+---
+ ${getSymbol(gameBoard[6])} | ${getSymbol(gameBoard[7])} | ${getSymbol(gameBoard[8])}
+''');
+  }
+  
+  /// Convert board value to player symbol
+  String? getSymbol(int gameBoardValue) {
+    if (gameBoardValue == PlayerMove.player1.value) {
+      return player1.choice;
+    } else if (gameBoardValue == PlayerMove.player2.value) {
+      return player2.choice;
+    }
+    return ' ';
+  }
+
+  /// Update the result list to track win conditions
+  void updateResultList(int position, PlayerMove player) {
+    int pos = position - 1;
+    
+    // Special case for position 0 (top-left corner)
+    if (pos == 0) {
+      result[0] += player.value;  // Update row 0
+      result[3] += player.value;  // Update column 0
+      result[6] += player.value;  // Update diagonal
+      return;
+    }
+    
+    // Calculate row and column indices
+    int row = pos ~/ 3;
+    int column = pos % 3;
+    
+    // Update row and column values
+    result[row] += player.value;
+    result[column + 3] += player.value;
+    
+    // Update diagonals if applicable
+    if (row + column == 2) {
+      if (column == 1) {
+        result[6] += player.value;
+        result[7] += player.value;
+      } else {
+        result[7] += player.value;
+      }
+    }
+    
+    if (row + column == 4) {
+      result[6] += player.value;
+    }
+  }
